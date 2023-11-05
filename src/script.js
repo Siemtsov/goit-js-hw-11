@@ -24,34 +24,78 @@ async function handlerSubmit(evt) {
   page = 1;
 
   const searchInput = evt.target.searchQuery.value;
-  localStorage.setItem('search-query', JSON.stringify(searchInput));
+  localStorage.setItem('search-query', searchInput);
   if (!searchInput) {
     Notify.failure('Please, enter your search details!');
-  } else {
-    try {
-      const data = await searchService(page, searchInput);
+  }
+  searchService(page, searchInput)
+    .then(data => {
       quantityImage += data.hits.length;
-      elem.cardList.insertAdjacentHTML('beforeend', createCard(data.hits));
-
+      elem.cardList.insertAdjacentHTML('afterbegin', createCard(data.hits));
       if (data.totalHits !== 0) {
-        Notify.success(`We found ${data.totalHits} images`);
+        Notify.success(`We found ${data.totalHits} images.`);
       }
       if (data.totalHits > quantityImage) {
         elem.loadMore.style.display = 'block';
       }
-    } catch {
+      if (data.totalHits === 0 && data.hits.length === 0 && data.total === 0) {
+        throw new Error();
+      }
+    })
+    .catch(() => {
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-    } finally {
+    })
+    .finally(() => {
       gallery.refresh();
-    }
-  }
+    });
+  // try {
+  //   const data = await searchService(page, searchInput);
+
+  //   quantityImage += data.hits.length;
+
+  //   elements.cardList.insertAdjacentHTML('beforeend', createCard(data.hits));
+
+  //   if (data.totalHits !== 0) {
+  //     Notify.info(`"We found ${data.totalHits} images."`);
+  //   }
+
+  //   if (data.totalHits > quantityImage) {
+  //     elements.btnLoadMore.style.display = 'block';
+  //   }
+  // } catch (error) {
+  //   Notify.failure(
+  //     'Sorry, there are no images matching your search query. Please try again.'
+  //   );
+  // } finally {
+  //   gallery.refresh();
+  // }
+  // else {
+  //   try {
+  //     const data = await searchService(page, searchInput);
+  //     quantityImage += data.hits.length;
+  //     elem.cardList.insertAdjacentHTML('beforeend', createCard(data.hits));
+
+  //     if (data.totalHits !== 0) {
+  //       Notify.success(`We found ${data.totalHits} images`);
+  //     }
+  //     if (data.totalHits > quantityImage) {
+  //       elem.loadMore.style.display = 'block';
+  //     }
+  //   } catch (error) {
+  //     Notify.failure(
+  //       'Sorry, there are no images matching your search query. Please try again.'
+  //     );
+  //   } finally {
+  //     gallery.refresh();
+  //   }
+  // }
 }
 
 async function handlerLoad() {
   try {
-    const inputValue = JSON.parse(localStorage.getItem('search-query'));
+    const inputValue = localStorage.getItem('search-query');
     page += 1;
     const data = await searchService(page, inputValue);
     quantityImage += data.hits.length;
