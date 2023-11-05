@@ -9,17 +9,22 @@
   <body>
     <form class="search-form" id="search-form">
       <input
+        class="search-input"
         type="text"
         name="searchQuery"
         autocomplete="off"
         placeholder="Search images..."
       />
-      <button type="submit">Search</button>
+      <button type="submit" class="search-submit">
+        <svg class="searc-icon" width="20" height="20">
+          <use href="./img/icons.svg#icon-search"></use>
+        </svg>
+      </button>
     </form>
     <div class="gallery">
       <!-- Картки зображень -->
     </div>
-    <button class="load-more"></button>
+    <button class="load-more">Load More...</button>
     <script type="module" src="./script.js"></script>
   </body>
 </html>
