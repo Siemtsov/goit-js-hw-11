@@ -4,14 +4,14 @@ import axios from 'axios';
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '40485321-9784daa101826a12726fe4187';
 
-async function searchService(page, searchValue) {
+async function searchService(currentPage, searchValue) {
   const params = new URLSearchParams({
     key: API_KEY,
     image_type: 'photo',
     q: searchValue,
     safeserch: true,
     per_page: '40',
-    page,
+    page: currentPage,
   });
   try {
     const resp = await axios.get(`${BASE_URL}?${params}`);
