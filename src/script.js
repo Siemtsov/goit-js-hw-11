@@ -18,36 +18,25 @@ elem.cardList.addEventListener('click', cardWorkout);
 elem.loadMore.addEventListener('click', handlerLoad);
 
 elem.loadMore.style.display = 'none';
-
 async function handlerSubmit(evt) {
   evt.preventDefault();
-  elem.cardList.innerHTML = '';
+  const searchQuery = evt.target.elements.searchQuery.value;
+  localStorage.setItem('search-query', JSON.stringify(searchQuery));
   page = 1;
-
-  const searchInput = evt.target.searchQuery.value;
-  localStorage.setItem('search-query', JSON.stringify(searchInput));
-
-  if (!searchInput) {
-    Notify.failure('Please, enter your search details!');
+  if (!searchQuery) {
+    Notify.failure('Please, enter search details!');
   } else {
     try {
-      const data = await searchService(page, searchInput);
-
-      quantityImage += data.hits.length;
-
-      elements.cardList.insertAdjacentHTML('beforeend', createCard(data.hits));
-
+      const data = await searchService(page, searchQuery);
+      elem.cardList.insertAdjacentHTML('afterbegin', createCard(data.hits));
       if (data.totalHits !== 0) {
-        Notify.info(`"We found ${data.totalHits} images."`);
+        Notify.success(`We found ${data.totalHits} images.`);
       }
-
-      if (data.totalHits > quantityImage) {
-        elements.btnLoadMore.style.display = 'block';
+      if (data.totalHits < 40) {
+        elem.loadMore.style.display = 'none';
       }
     } catch (error) {
-      Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
+      Notify.failure(error.message);
     } finally {
       gallery.refresh();
     }
@@ -58,9 +47,13 @@ async function handlerLoad() {
   try {
     const inputValue = JSON.parse(localStorage.getItem('search-query'));
     page += 1;
+
     const data = await searchService(page, inputValue);
+
     quantityImage += data.hits.length;
+
     const newCards = createCard(data.hits);
+
     elem.cardList.insertAdjacentHTML('beforeend', newCards);
     if (data.hits.length < 40) {
       elem.loadMore.style.display = 'none';
@@ -75,7 +68,7 @@ async function handlerLoad() {
 
 async function cardWorkout(evt) {
   evt.preventDefault();
-  gallery.next();
+  // gallery.next();
 }
 
 function createCard(arr) {
