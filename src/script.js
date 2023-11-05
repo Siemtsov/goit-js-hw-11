@@ -31,6 +31,7 @@ async function handlerSubmit(evt) {
   searchService(page, searchInput)
     .then(data => {
       quantityImage += data.hits.length;
+      console.log(data.totalHits);
       elem.cardList.insertAdjacentHTML('afterbegin', createCard(data.hits));
       if (data.totalHits !== 0) {
         Notify.success(`We found ${data.totalHits} images.`);
@@ -100,9 +101,10 @@ async function handlerLoad() {
     page += 1;
     const data = await searchService(page, inputValue);
     quantityImage += data.hits.length;
+    console.log(quantityImage);
     const newCards = createCard(data.hits);
     elem.cardList.insertAdjacentHTML('beforeend', newCards);
-    if (data.hits.length < 40) {
+    if (data.totalHits - quantityImage <= 0) {
       elem.loadMore.style.display = 'none';
       Notify.info('Sorry, you have reached the end of the page!');
     }
