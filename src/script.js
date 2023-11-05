@@ -16,6 +16,7 @@ let page = 1;
 elem.form.addEventListener('submit', handlerSubmit);
 elem.cardList.addEventListener('click', cardWorkout);
 elem.loadMore.addEventListener('click', handlerLoad);
+
 elem.loadMore.style.display = 'none';
 
 async function handlerSubmit(evt) {
@@ -25,21 +26,28 @@ async function handlerSubmit(evt) {
 
   const searchInput = evt.target.searchQuery.value;
   localStorage.setItem('search-query', JSON.stringify(searchInput));
+
   if (!searchInput) {
     Notify.failure('Please, enter your search details!');
   } else {
     try {
       const data = await searchService(page, searchInput);
+
       quantityImage += data.hits.length;
-      elem.cardList.insertAdjacentHTML('beforeend', createCard(data.hits));
+
+      elements.cardList.insertAdjacentHTML(
+        'beforeend',
+        cardListMarkup(data.hits)
+      );
 
       if (data.totalHits !== 0) {
-        Notify.success(`We found ${data.totalHits} images`);
+        Notify.info(`"We found ${data.totalHits} images."`);
       }
+
       if (data.totalHits > quantityImage) {
-        elem.loadMore.style.display = 'block';
+        elements.btnLoadMore.style.display = 'block';
       }
-    } catch {
+    } catch (error) {
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
