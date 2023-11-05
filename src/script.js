@@ -35,10 +35,7 @@ async function handlerSubmit(evt) {
 
       quantityImage += data.hits.length;
 
-      elements.cardList.insertAdjacentHTML(
-        'beforeend',
-        cardListMarkup(data.hits)
-      );
+      elements.cardList.insertAdjacentHTML('beforeend', createCard(data.hits));
 
       if (data.totalHits !== 0) {
         Notify.info(`"We found ${data.totalHits} images."`);
