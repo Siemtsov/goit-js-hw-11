@@ -55,14 +55,14 @@ async function handlerSubmit(evt) {
 
   //   quantityImage += data.hits.length;
 
-  //   elements.cardList.insertAdjacentHTML('beforeend', createCard(data.hits));
+  //   elem.cardList.insertAdjacentHTML('beforeend', createCard(data.hits));
 
   //   if (data.totalHits !== 0) {
   //     Notify.info(`"We found ${data.totalHits} images."`);
   //   }
 
   //   if (data.totalHits > quantityImage) {
-  //     elements.btnLoadMore.style.display = 'block';
+  //     elem.loadMore.style.display = 'block';
   //   }
   // } catch (error) {
   //   Notify.failure(
